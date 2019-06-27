@@ -14,8 +14,7 @@
      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
      http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
 		<property name="driverClassName">
 			<value>${spring.datasource.driver-class-name}</value>
 		</property>
@@ -28,8 +27,20 @@
 		<property name="password">
 			<value>${spring.datasource.password}</value>
 		</property>
+		<property name="initialSize" value="10" />
+		<property name="minIdle" value="6" />
+		<property name="maxActive" value="50" />
+		<property name="maxWait" value="60000" />
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+        <property name="validationQuery" value="SELECT 'x' " />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+        <property name="poolPreparedStatements" value="false" />
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+ 		<property name="filters" value="wall,stat" />
 	</bean>
-
 
 	<bean id="sqlSessionFactory"
 		class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -40,7 +51,7 @@
 			value="com.persistence.mapper.**.xml"></property>
 		<property name="plugins">
 			<array>
-				<!-- <bean class="com.tech.base.persistence.mybatis.PagingInterceptor"></bean> -->
+				<!-- <bean class="com.persistence.mybatis.PagingInterceptor"></bean> -->
 			</array>
 		</property>
 	</bean>
