@@ -1,6 +1,7 @@
 package com.persistence.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,21 @@ public class UserService {
         user.setVersion(1);
         userDAO.insertSelective(user);
         return user;
+    }
+
+    @Transactional
+    public User updateUser(User user) {
+        user.setUpdateTime(new Date());
+        user.setUpdateUser("test");
+        this.userDAO.updateByPrimaryKeySelective(user);
+        return user;
+    }
+
+    public List<User> getUserList() {
+        return this.userDAO.selectByExample(null);
+    }
+
+    public int deleteUser(Integer id) {
+        return this.userDAO.deleteByPrimaryKey(id);
     }
 }

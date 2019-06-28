@@ -2,6 +2,7 @@ package com.persistence.mybatis;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
@@ -24,13 +25,28 @@ public class BaseDAO<E, X, M> extends SqlSessionDaoSupport {
         entityMapperClass = (Class<M>)parameterizedType[2];
     }
 
-    private java.lang.reflect.Type[] getParameterizedTypes() {
-        java.lang.reflect.Type type = getClass().getGenericSuperclass();
-        return ((ParameterizedType)type).getActualTypeArguments();
+    public long countByExample(X example) {
+        M entityMapper = getEntityMapperProxy();
+        Method method = ReflectionUtils.findMethod(entityMapperClass, "countByExample", entityExampleClass);
+        return (long)ReflectionUtils.invokeMethod(method, entityMapper, example);
     }
 
-    private M getEntityMapperProxy() {
-        return this.getSqlSession().getMapper(entityMapperClass);
+    public int deleteByExample(X example) {
+        M entityMapper = getEntityMapperProxy();
+        Method method = ReflectionUtils.findMethod(entityMapperClass, "deleteByExample", entityExampleClass);
+        return (int)ReflectionUtils.invokeMethod(method, entityMapper, example);
+    }
+
+    public int deleteByPrimaryKey(Integer id) {
+        M entityMapper = getEntityMapperProxy();
+        Method method = ReflectionUtils.findMethod(entityMapperClass, "deleteByPrimaryKey", Integer.class);
+        return (int)ReflectionUtils.invokeMethod(method, entityMapper, id);
+    }
+
+    public int insert(E record) {
+        M entityMapper = getEntityMapperProxy();
+        Method method = ReflectionUtils.findMethod(entityMapperClass, "insert", entityClass);
+        return (int)ReflectionUtils.invokeMethod(method, entityMapper, record);
     }
 
     public int insertSelective(E record) {
@@ -39,9 +55,59 @@ public class BaseDAO<E, X, M> extends SqlSessionDaoSupport {
         return (int)ReflectionUtils.invokeMethod(method, entityMapper, record);
     }
 
+    @SuppressWarnings("unchecked")
+    public List<E> selectByExample(X example) {
+        M entityMapper = getEntityMapperProxy();
+        Method method = ReflectionUtils.findMethod(entityMapperClass, "selectByExample", entityExampleClass);
+        return (List<E>)ReflectionUtils.invokeMethod(method, entityMapper, example);
+    }
+
+    @SuppressWarnings("unchecked")
+    public E selectByPrimaryKey(Integer id) {
+        M entityMapper = getEntityMapperProxy();
+        Method method = ReflectionUtils.findMethod(entityMapperClass, "selectByPrimaryKey", Integer.class);
+        return (E)ReflectionUtils.invokeMethod(method, entityMapper, id);
+    }
+
+    public int updateByExampleSelective(E record, X example) {
+        M entityMapper = getEntityMapperProxy();
+        Method method = ReflectionUtils.findMethod(entityMapperClass, "updateByExampleSelective", entityClass,
+            entityExampleClass);
+        return (int)ReflectionUtils.invokeMethod(method, entityMapper, record, example);
+    }
+
+    public int updateByExample(E record, X example) {
+        M entityMapper = getEntityMapperProxy();
+        Method method
+            = ReflectionUtils.findMethod(entityMapperClass, "updateByExample", entityClass, entityExampleClass);
+        return (int)ReflectionUtils.invokeMethod(method, entityMapper, record, example);
+    }
+
+    public int updateByPrimaryKeySelective(E record) {
+        M entityMapper = getEntityMapperProxy();
+        Method method = ReflectionUtils.findMethod(entityMapperClass, "updateByPrimaryKeySelective", entityClass);
+        return (int)ReflectionUtils.invokeMethod(method, entityMapper, record);
+    }
+
+    public int updateByPrimaryKey(E record) {
+        M entityMapper = getEntityMapperProxy();
+        Method method = ReflectionUtils.findMethod(entityMapperClass, "updateByPrimaryKey", entityClass);
+        return (int)ReflectionUtils.invokeMethod(method, entityMapper, record);
+    }
+
+    private M getEntityMapperProxy() {
+        return this.getSqlSession().getMapper(entityMapperClass);
+    }
+
+    private java.lang.reflect.Type[] getParameterizedTypes() {
+        java.lang.reflect.Type type = getClass().getGenericSuperclass();
+        return ((ParameterizedType)type).getActualTypeArguments();
+    }
+
     @Override
     @Autowired
     public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
         super.setSqlSessionFactory(sqlSessionFactory);
     }
+
 }
