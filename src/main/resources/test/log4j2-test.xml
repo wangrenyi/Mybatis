@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration status="WARN" monitorInterval="30">
 	<Properties>
-		<Property name="logFolder">/data/app/mybatis/logs/</Property>
+		<Property name="logFolder">/data/app/mybatis/test/logs/</Property>
 		<Property name="applog">${logFolder}app.log</Property>
 		<Property name="springlog">${logFolder}spring.log</Property>
 		<Property name="mybatislog">${logFolder}mybatis.log</Property>
