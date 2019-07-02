@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.persistence.common.PagingQuery;
 import com.persistence.service.UserService;
 import com.persistence.table.User;
 
@@ -34,8 +35,13 @@ public class UserController {
         return this.userService.saveUser(user);
     }
 
-    @RequestMapping(value = "list", method = RequestMethod.GET)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     public List<User> getUserList() {
+        return this.userService.getUserList();
+    }
+
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public List<User> searchUsers(PagingQuery pagingQuery) {
         return this.userService.getUserList();
     }
 

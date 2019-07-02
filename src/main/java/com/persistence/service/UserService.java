@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.persistence.common.PagingQuery;
+import com.persistence.common.PagingResult;
 import com.persistence.dao.UserDAO;
 import com.persistence.table.User;
 
@@ -39,6 +41,11 @@ public class UserService {
 
     public List<User> getUserList() {
         return this.userDAO.selectByExample(null);
+    }
+
+    public PagingResult searchUsers(PagingQuery pagingQuery) {
+        // this.userDAO.selectByExample(example);
+        return null;
     }
 
     public int deleteUser(Integer id) {
