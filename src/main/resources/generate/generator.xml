@@ -7,6 +7,9 @@
 
 		<property name="beginningDelimiter" value="`" />
 		<property name="endingDelimiter" value="`" />
+		
+		<plugin type="com.persistence.generator.FuzzySearchPlugin" />
+		<plugin type="com.persistence.generator.PagingExamplePlugin" />
 
 		<jdbcConnection
 			connectionURL="jdbc:mysql://localhost:3306/mybatis?serverTimezone=GMT%2B8&amp;nullCatalogMeansCurrent=true"

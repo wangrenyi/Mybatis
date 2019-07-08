@@ -3,11 +3,14 @@ package com.persistence.mybatis;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ReflectionUtils;
+
+import com.persistence.common.PagingResult;
 
 /**
  * https://blog.csdn.net/xiaokang123456kao/article/details/76228684
@@ -93,6 +96,28 @@ public class BaseDAO<E, X, M> extends SqlSessionDaoSupport {
         M entityMapper = getEntityMapperProxy();
         Method method = ReflectionUtils.findMethod(entityMapperClass, "updateByPrimaryKey", entityClass);
         return (int)ReflectionUtils.invokeMethod(method, entityMapper, record);
+    }
+
+    /**
+     * @describe user example limit,offset
+     */
+    public PagingResult pagingByExample(X entityExample, Integer pageIndex, Integer pageSize) {
+        PagingResult pagingResult = new PagingResult();
+
+        Long count = this.countByExample(entityExample);
+        pagingResult.setCount(count);
+
+        Method setLimit = ReflectionUtils.findMethod(entityExample.getClass(), "setLimit", Integer.class);
+        ReflectionUtils.invokeMethod(setLimit, entityExample, pageSize);
+
+        Method setOffset = ReflectionUtils.findMethod(entityExample.getClass(), "setOffset", Integer.class);
+        int offset = Optional.of(pageIndex).filter(p -> p > 0).map(mapper -> mapper * pageSize).orElse(0);
+        ReflectionUtils.invokeMethod(setOffset, entityExample, offset);
+
+        List<?> details = this.selectByExample(entityExample);
+        pagingResult.setDetails(details);
+
+        return pagingResult;
     }
 
     private M getEntityMapperProxy() {
