@@ -2,7 +2,6 @@ package com.persistence.plugin;
 
 import java.sql.Connection;
 import java.util.Optional;
-import java.util.Properties;
 
 import org.apache.ibatis.executor.statement.RoutingStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -18,12 +17,13 @@ import com.persistence.common.PagingQuery;
 import com.persistence.util.ReflectionUtil;
 
 /**
- * refer to: https://elim168.blog.csdn.net/article/details/40737009 
+ * @refer https://elim168.blog.csdn.net/article/details/40737009 
+ * @refer https://blog.csdn.net/chenbaige/article/details/70846902
  */
 
 @Intercepts(
     value = {@Signature(args = {Connection.class, Integer.class}, method = "prepare", type = StatementHandler.class)})
-public class PagingInterceptor extends AbstractInterceptor {
+public class PagingPrepareInterceptor extends AbstractInterceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -69,8 +69,5 @@ public class PagingInterceptor extends AbstractInterceptor {
         }
         return target;
     }
-
-    @Override
-    public void setProperties(Properties properties) {}
 
 }

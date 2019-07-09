@@ -8,8 +8,13 @@ import org.springframework.stereotype.Repository;
 import com.persistence.common.PagingQuery;
 import com.persistence.mapper.UserExtMapper;
 import com.persistence.mybatis.BaseDAO;
+import com.persistence.plugin.PagingPrepareInterceptor;
 import com.persistence.table.User;
 import com.persistence.table.UserExample;
+
+/**
+ * @see PagingPrepareInterceptor
+ */
 
 @Repository
 public class UserExtDAO extends BaseDAO<User, UserExample, UserExtMapper> {

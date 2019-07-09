@@ -2,15 +2,20 @@ package com.persistence.mybatis;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ReflectionUtils;
 
 import com.persistence.common.PagingResult;
+import com.persistence.generator.PagingExamplePlugin;
+import com.persistence.plugin.PagingQueryInterceptor;
 
 /**
  * https://blog.csdn.net/xiaokang123456kao/article/details/76228684
@@ -99,7 +104,30 @@ public class BaseDAO<E, X, M> extends SqlSessionDaoSupport {
     }
 
     /**
+     * @see PagingQueryInterceptor
+     */
+    public PagingResult pagingByExample2(X entityExample, Integer pageIndex, Integer pageSize) {
+        MappedStatement mappedStatement = this.getSqlSession().getConfiguration()
+            .getMappedStatement(entityMapperClass.getName() + ".selectByExample");
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("example", entityExample);
+        paramMap.put("pageIndex", pageIndex);
+        paramMap.put("pageSize", pageSize);
+
+        Long count = this.countByExample(entityExample);
+        List<?> details = this.getSqlSession().selectList(mappedStatement.getId(), paramMap);
+
+        PagingResult pagingResult = new PagingResult();
+        pagingResult.setCount(count);
+        pagingResult.setDetails(details);
+
+        return pagingResult;
+    }
+
+    /**
      * @describe user example limit,offset
+     * @see PagingExamplePlugin
      */
     public PagingResult pagingByExample(X entityExample, Integer pageIndex, Integer pageSize) {
         PagingResult pagingResult = new PagingResult();

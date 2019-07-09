@@ -49,7 +49,7 @@ public class UserService {
         return this.userDAO.selectByExample(null);
     }
 
-    public PagingResult searchUsers(PagingQuery pagingQuery) {
+    public PagingResult searchUsersQuery(PagingQuery pagingQuery) {
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
         Optional.ofNullable(pagingQuery.getCriteria()).map(mapper -> {
@@ -59,11 +59,40 @@ public class UserService {
             return mapper;
         }).ifPresent(consumer -> criteria.andAnyLike(consumer));;
 
-        // return this.userDAO.pagingByExample(example, pagingQuery.getPageIndex(), pagingQuery.getPageSize());
+        return this.userDAO.pagingByExample2(example, pagingQuery.getPageIndex(), pagingQuery.getPageSize());
+    }
+
+    public PagingResult searchUsersPrepare(PagingQuery pagingQuery) {
+        UserExample example = new UserExample();
+        UserExample.Criteria criteria = example.createCriteria();
+        Optional.ofNullable(pagingQuery.getCriteria()).map(mapper -> {
+            mapper.forEach((key, value) -> {
+                mapper.put(key, "%" + value + "%");
+            });
+            return mapper;
+        }).ifPresent(consumer -> criteria.andAnyLike(consumer));;
+
+        Long count = this.userDAO.countByExample(example);
         List<User> users = this.userExtDAO.pageUserList(pagingQuery);
+
         PagingResult result = new PagingResult();
+        result.setCount(count);
         result.setDetails(users);
+
         return result;
+    }
+
+    public PagingResult searchUsersEx(PagingQuery pagingQuery) {
+        UserExample example = new UserExample();
+        UserExample.Criteria criteria = example.createCriteria();
+        Optional.ofNullable(pagingQuery.getCriteria()).map(mapper -> {
+            mapper.forEach((key, value) -> {
+                mapper.put(key, "%" + value + "%");
+            });
+            return mapper;
+        }).ifPresent(consumer -> criteria.andAnyLike(consumer));;
+
+        return this.userDAO.pagingByExample(example, pagingQuery.getPageIndex(), pagingQuery.getPageSize());
     }
 
     public int deleteUser(Integer id) {

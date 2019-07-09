@@ -41,9 +41,19 @@ public class UserController {
         return this.userService.getUserList();
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public PagingResult searchUsers(PagingQuery pagingQuery) {
-        return this.userService.searchUsers(pagingQuery);
+    @RequestMapping(value = "/search/prepare", method = RequestMethod.GET)
+    public PagingResult searchUsersPrepare(PagingQuery pagingQuery) {
+        return this.userService.searchUsersPrepare(pagingQuery);
+    }
+
+    @RequestMapping(value = "/search/query", method = RequestMethod.GET)
+    public PagingResult searchUsersQuery(PagingQuery pagingQuery) {
+        return this.userService.searchUsersQuery(pagingQuery);
+    }
+
+    @RequestMapping(value = "/search/ex", method = RequestMethod.GET)
+    public PagingResult searchUsersEx(PagingQuery pagingQuery) {
+        return this.userService.searchUsersEx(pagingQuery);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)

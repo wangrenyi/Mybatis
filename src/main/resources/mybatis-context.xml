@@ -82,7 +82,8 @@
 			value="com.persistence.mapper.**.xml"></property>
  		<property name="plugins">
 			<array>
-				<bean class="com.persistence.plugin.PagingInterceptor"></bean>
+				<bean class="com.persistence.plugin.PagingPrepareInterceptor"></bean>
+				<bean class="com.persistence.plugin.PagingQueryInterceptor"></bean>
 			</array>
 		</property>
 	</bean>
